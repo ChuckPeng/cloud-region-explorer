@@ -1,12 +1,11 @@
-﻿# ==================== GitHub Actions: Docker Build & Push ====================
-# 当推送到 main 分支或打 tag 时自动构建并推送 DockerHub
-
-name: Docker Build & Push
+name: Docker Build and Push
 
 on:
   push:
-    branches: [main]
-    tags: ["v*"]
+    branches:
+      - main
+    tags:
+      - "v*"
   workflow_dispatch:
 
 env:
@@ -15,9 +14,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout
@@ -32,26 +28,27 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=tag
-            type=sha,prefix=,format=short
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+      - name: Set image tags
+        id: vars
+        shell: bash
+        run: |
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          TAGS="${IMAGE}:sha-${SHORT_SHA}"
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            TAGS="${TAGS},${IMAGE}:latest"
+          fi
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION_TAG="${GITHUB_REF#refs/tags/}"
+            TAGS="${TAGS},${IMAGE}:${VERSION_TAG}"
+          fi
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.vars.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Image digest
-        run: echo "Image pushed: ${{ steps.meta.outputs.tags }}"
