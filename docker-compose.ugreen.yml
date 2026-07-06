@@ -1,0 +1,53 @@
+﻿# ============================================================
+# Cloud Region Explorer - 绿联云 NAS 部署配置
+# 适用: UGOS Pro (DXP4800 等) / UGOS (DH2600 等)
+# ============================================================
+#
+# 部署前准备：
+# 1. 在绿联云 Docker 管理页面 → 镜像 → 添加 → 填入 chuckpeng/cloud-region-explorer:beta
+#    或者直接使用本 compose 文件，绿联云会自动拉取
+# 2. 在文件管理器中创建部署目录，如 /共享文件夹/docker/cloud-region-explorer/
+# 3. 将本文件和 nginx.conf 放入该目录
+# 4. 修改下方 ports 端口号（如已被占用）
+#
+# 启动: docker compose up -d
+# 停止: docker compose down
+# 更新: docker compose pull && docker compose up -d --force-recreate
+
+services:
+  # ========== Next.js 应用 ==========
+  app:
+    image: chuckpeng/cloud-region-explorer:beta
+    container_name: cloud-region-explorer-app
+    volumes:
+      # 数据持久化：SQLite 数据库存储路径，映射到 NAS 目录
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Shanghai
+      - CRON_ENABLED=true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    # 如不需要外部直接访问，注释掉 ports
+    # ports:
+    #   - "3000:3000"
+
+  # ========== Nginx 反向代理 ==========
+  nginx:
+    image: nginx:alpine
+    container_name: cloud-region-explorer-nginx
+    ports:
+      # "主机端口:容器端口" - 修改 8080 为你想用的端口
+      - "8080:80"
+    volumes:
+      # nginx.conf 必须与本文件在同一目录
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
