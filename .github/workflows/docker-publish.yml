@@ -1,4 +1,4 @@
-name: Docker Build and Push
+﻿name: Docker Build and Push
 
 on:
   push:
@@ -35,13 +35,25 @@ jobs:
           IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}"
           SHORT_SHA="${GITHUB_SHA::7}"
           TAGS="${IMAGE}:sha-${SHORT_SHA}"
+
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            TAGS="${TAGS},${IMAGE}:latest"
+            # main 分支 = 测试通道，始终推 :beta
+            TAGS="${TAGS},${IMAGE}:beta"
           fi
+
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION_TAG="${GITHUB_REF#refs/tags/}"
             TAGS="${TAGS},${IMAGE}:${VERSION_TAG}"
+
+            if [[ "${VERSION_TAG}" == *-beta ]]; then
+              # beta 版 tag → 同时更新 :beta 流动标签
+              TAGS="${TAGS},${IMAGE}:beta"
+            else
+              # 正式版 tag → 更新 :latest 流动标签（未来使用）
+              TAGS="${TAGS},${IMAGE}:latest"
+            fi
           fi
+
           echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push

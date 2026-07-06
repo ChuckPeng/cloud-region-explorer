@@ -1,11 +1,12 @@
 ﻿version: "3.8"
 
-# ==================== 从 DockerHub 拉取部署 ====================
+# ==================== 从 DockerHub 拉取部署（测试通道） ====================
 # 用法: DOCKERHUB_USERNAME=yourname docker compose -f docker-compose.pull.yml up -d
+# 镜像固定引用 :beta 标签，每次 pull 自动获取最新测试版
 
 services:
   app:
-    image: ${DOCKERHUB_USERNAME:-your-dockerhub-username}/cloud-region-explorer:latest
+    image: ${DOCKERHUB_USERNAME:-your-dockerhub-username}/cloud-region-explorer:beta
     container_name: cloud-region-explorer-app
     volumes:
       - ./data:/app/data

@@ -1,12 +1,18 @@
 ﻿# Changelog
 
-## v1.0.0-beta.2 - 2026-07-06
+## v1.0.1-beta - 2026-07-06
 
 ### Fixed
 
 - 地图页面 `MapMarkerContent` 中 CJS `require("leaflet")` 和 `require("react-leaflet")` 改为 ESM `import L from "leaflet"`，确保 Turbopack 与严格 ESM 模式兼容
 - 地图页面 `MapMarkerContent` 移除组件内部重复的 require，复用模块顶层的 dynamic import 组件
 - README.md 中文编码损坏修复（UTF-8 BOM → UTF-8）
+
+### Changed
+
+- 重构 Docker 标签策略：新增 `:beta` 流动标签，测试环境固定引用 `:beta` 即可自动获取最新测试版
+- 版本标签规范化：`v1.0.0-beta` → `v1.0.1-beta`（PATCH 号递增），废弃 `v1.0.0-beta.N` 格式
+- `docker-compose.pull.yml` 镜像引用从 `:latest` 改为 `:beta`
 
 ### Tests
 
@@ -15,7 +21,7 @@
 - 采集器测试：4/5 通过（AWS 因网络环境 fetch 超时，非代码缺陷）
 - TypeScript 类型检查：生产代码 0 错误
 
-## v1.0.0-beta.1 - 2026-07-03
+## v1.0.0-beta - 2026-07-03
 
 ### Added
 
