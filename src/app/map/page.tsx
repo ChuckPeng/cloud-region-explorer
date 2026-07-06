@@ -4,7 +4,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
-import L from "leaflet";
 import { CloudRegion, VENDOR_LABELS, VENDOR_COLORS, Vendor, VENDORS } from "@/types";
 import { Layers } from "lucide-react";
 
@@ -131,8 +130,11 @@ function MapMarkerContent({ group }: { group: { lat: number; lng: number; items:
   const primaryColor = VENDOR_COLORS[group.items[0].vendor] || "#3B82F6";
   const totalAzs = group.items.reduce((sum, r) => sum + r.az_count, 0);
 
-  // L is imported at module scope via `import L from "leaflet"`.
-  // This works because the entire page is wrapped in dynamic({ ssr: false }).
+  // require() 在函数体内是懒加载，Next.js webpack 构建时不会尝试在服务端解析 leaflet 模块。
+  // 该组件只在 dynamic({ ssr: false }) 的 MapContainer 子树上渲染，因此 require 仅执行于浏览器。
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const L = require("leaflet");
+
   const icon = L.divIcon({
     className: "custom-marker",
     html: `<div style="background:${primaryColor};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.3);"></div>`,
