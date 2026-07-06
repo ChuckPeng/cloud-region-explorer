@@ -4,6 +4,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
+import L from "leaflet";
 import { CloudRegion, VENDOR_LABELS, VENDOR_COLORS, Vendor, VENDORS } from "@/types";
 import { Layers } from "lucide-react";
 
@@ -127,12 +128,11 @@ export default function MapPage() {
 }
 
 function MapMarkerContent({ group }: { group: { lat: number; lng: number; items: CloudRegion[] } }) {
-  const L = require("leaflet");
-  const { Marker, Popup } = require("react-leaflet");
-
   const primaryColor = VENDOR_COLORS[group.items[0].vendor] || "#3B82F6";
   const totalAzs = group.items.reduce((sum, r) => sum + r.az_count, 0);
 
+  // L is imported at module scope via `import L from "leaflet"`.
+  // This works because the entire page is wrapped in dynamic({ ssr: false }).
   const icon = L.divIcon({
     className: "custom-marker",
     html: `<div style="background:${primaryColor};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.3);"></div>`,
