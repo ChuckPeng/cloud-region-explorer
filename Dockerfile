@@ -28,7 +28,7 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# 安装 sql.js 运行时依赖（如果 standalone 未自动包含）
+# sql.js 包含 WASM 文件，需要完整的包目录（standalone 的 tracing 有时遗漏 WASM）
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/sql.js ./node_modules/sql.js
 
 RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data

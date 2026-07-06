@@ -3,6 +3,9 @@ const nextConfig = {
   output: "standalone",
   experimental: {
     instrumentationHook: true,
+    outputFileTracingIncludes: {
+      "/*": ["./node_modules/sql.js/**/*"],
+    },
   },
   // CORS + 安全头
   async headers() {
@@ -31,4 +34,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-
