@@ -1,5 +1,25 @@
 ﻿# Changelog
 
+## v1.0.3-beta - 2026-07-08
+
+### Fixed
+
+- **关键修复**：`next.config.js` 新增 `serverExternalPackages: ["sql.js", "node-cron"]`，修复 Next.js standalone 模式下 sql.js / node-cron 被打包进 ESM chunk 导致 `TypeError: Cannot set properties of undefined (setting 'exports')` 运行时崩溃
+- 受影响 API：`/api/stats`、`/api/regions`、`/api/collect` 中所有依赖 `ensureDb()` 的路由
+
+### Tests
+
+- 数据库层测试：11/11 通过
+- API 数据层测试：16/16 通过
+- 采集器测试：107/107 通过
+- 安全审计：无硬编码密钥、无 SQL 注入风险、安全头配置完整
+
+## v1.0.2-beta - 2026-07-06
+
+### Changed
+
+- CI/CD 标签策略优化：正式版 tag 推送 `:latest`（此前仅 push main 分支触发 `:beta`）
+
 ## v1.0.1-beta - 2026-07-06
 
 ### Fixed
