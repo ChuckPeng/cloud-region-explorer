@@ -30,11 +30,45 @@ export async function ensureDb(): Promise<SqlJsDatabase> {
   return _initPromise;
 }
 
+/** 查找 sql.js WASM 文件路径 */
+function findWasmPath(): string {
+  // 尝试多个可能的路径（覆盖开发、standalone、Docker 场景）
+  const candidates = [
+    // Docker / standalone 中手动 COPY 的路径
+    path.join(process.cwd(), "node_modules", "sql.js", "dist", "sql-wasm.wasm"),
+    // Next.js standalone 自动追踪的路径
+    path.join(__dirname, "..", "..", "..", "node_modules", "sql.js", "dist", "sql-wasm.wasm"),
+    // 直接 require.resolve
+    (() => { try { return path.join(path.dirname(require.resolve("sql.js")), "sql-wasm.wasm"); } catch { return null; } })(),
+  ].filter(Boolean) as string[];
+
+  for (const p of candidates) {
+    if (fs.existsSync(p)) {
+      console.log("[DB] 找到 WASM:", p);
+      return p;
+    }
+  }
+
+  // 默认回退：与 sql-wasm.js 同目录
+  const defaultPath = path.join(path.dirname(require.resolve("sql.js")), "sql-wasm.wasm");
+  console.log("[DB] WASM 默认路径:", defaultPath);
+  return defaultPath;
+}
+
 /** 初始化数据库 */
 export async function initDb(): Promise<SqlJsDatabase> {
   if (_db) return _db;
 
-  const SQL = await initSqlJs();
+  const wasmPath = findWasmPath();
+  const SQL = await initSqlJs({
+    locateFile: (file: string) => {
+      // sql.js 请求 "sql-wasm.wasm" 时返回我们找到的路径
+      if (file === "sql-wasm.wasm" || file.endsWith(".wasm")) {
+        return wasmPath;
+      }
+      return file;
+    },
+  });
 
   let buffer: ArrayBuffer | null = null;
   if (fs.existsSync(DB_PATH)) {
