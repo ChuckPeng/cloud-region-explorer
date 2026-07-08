@@ -1,12 +1,12 @@
-﻿/** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  serverExternalPackages: [
-    "sql.js",
-    "node-cron",
-  ],
   experimental: {
     instrumentationHook: true,
+    serverComponentsExternalPackages: [
+      "sql.js",
+      "node-cron",
+    ],
     outputFileTracingIncludes: {
       "/*": ["./node_modules/sql.js/**/*"],
     },
