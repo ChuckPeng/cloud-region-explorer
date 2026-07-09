@@ -1,11 +1,10 @@
 "use client";
 
-// ==================== 地图可视化页面 (F9) - 动态导入版本 ====================
+// ==================== 地图可视化页面 - 中文底图版 ====================
 
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { CloudRegion, VENDOR_LABELS, VENDOR_COLORS, Vendor, VENDORS } from "@/types";
-import { Layers } from "lucide-react";
 
 // 动态导入地图组件，禁用 SSR
 const MapContainer = dynamic(
@@ -100,9 +99,15 @@ export default function MapPage() {
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
           >
+            {/* 底图：Carto Voyager（比 OSM 标准版更美观清晰的英文底图） */}
             <TileLayer
-              attribution='&copy; 高德地图 | <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
+              attribution='&copy; <a href="https://carto.com/">CARTO</a> &amp; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | 中文标注 &copy; 高德'
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+            />
+            {/* 中文标注透明叠加：高德 style=8 纯标注层 */}
+            <TileLayer
+              url="https://wprd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=8"
+              opacity={0.5}
             />
             {grouped.map((group, idx) => (
               <MapMarkerContent key={idx} group={group} />
@@ -130,8 +135,6 @@ function MapMarkerContent({ group }: { group: { lat: number; lng: number; items:
   const primaryColor = VENDOR_COLORS[group.items[0].vendor] || "#3B82F6";
   const totalAzs = group.items.reduce((sum, r) => sum + r.az_count, 0);
 
-  // require() 在函数体内是懒加载，Next.js webpack 构建时不会尝试在服务端解析 leaflet 模块。
-  // 该组件只在 dynamic({ ssr: false }) 的 MapContainer 子树上渲染，因此 require 仅执行于浏览器。
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const L = require("leaflet");
 
