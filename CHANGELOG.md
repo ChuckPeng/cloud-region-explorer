@@ -1,3 +1,19 @@
+# Changelog
+
+## v1.0.4-beta - 2026-07-09
+
+### Added
+- 地图切换高德中文瓦片底图
+- 新增 Istanbul 坐标，修复华为云土耳其节点无圆点
+- CI/CD sha- 标签自动清理（保留最新10个）
+
+### Fixed
+- Docker volume 权限：entrypoint 自动 chown 防 EACCES
+- Dockerfile public COPY 补全 --chown
+
+### Tests
+- 134/134 通过 | TSC 生产 0 错误 | 安全审计通过
+
 ﻿# Changelog
 
 ## v1.0.3-beta - 2026-07-08

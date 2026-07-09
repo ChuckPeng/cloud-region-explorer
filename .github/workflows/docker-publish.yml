@@ -49,7 +49,7 @@ jobs:
               # beta 版 tag → 同时更新 :beta 流动标签
               TAGS="${TAGS},${IMAGE}:beta"
             else
-              # 正式版 tag → 更新 :latest 流动标签（未来使用）
+              # 正式版 tag → 更新 :latest 流动标签
               TAGS="${TAGS},${IMAGE}:latest"
             fi
           fi
@@ -64,3 +64,35 @@ jobs:
           tags: ${{ steps.vars.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Cleanup old sha- tags (keep latest 10)
+        shell: bash
+        run: |
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}"
+          DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
+          DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+
+          # 获取 token
+          TOKEN=$(curl -s -H "Content-Type: application/json" \
+            -X POST -d "{\"username\":\"${DOCKERHUB_USERNAME}\",\"password\":\"${DOCKERHUB_TOKEN}\"}" \
+            https://hub.docker.com/v2/users/login/ | jq -r .token)
+
+          # 获取所有 sha- 标签，按更新时间排序
+          TAGS_JSON=$(curl -s -H "Authorization: JWT ${TOKEN}" \
+            "https://hub.docker.com/v2/repositories/${IMAGE}/tags/?page_size=100&ordering=last_updated" \
+            | jq '[.results[] | select(.name | startswith("sha-"))] | sort_by(.last_updated) | reverse')
+
+          TOTAL=$(echo "$TAGS_JSON" | jq 'length')
+          echo "发现 ${TOTAL} 个 sha- 标签，保留最新 10 个"
+
+          if [ "$TOTAL" -gt 10 ]; then
+            TO_DELETE=$(echo "$TAGS_JSON" | jq -r '.[10:] | .[].name')
+            for TAG in $TO_DELETE; do
+              echo "删除: ${IMAGE}:${TAG}"
+              curl -s -X DELETE -H "Authorization: JWT ${TOKEN}" \
+                "https://hub.docker.com/v2/repositories/${IMAGE}/tags/${TAG}/"
+            done
+            echo "清理完成"
+          else
+            echo "无需清理"
+          fi

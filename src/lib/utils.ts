@@ -1,4 +1,4 @@
-﻿// ==================== 工具函数 ====================
+// ==================== 工具函数 ====================
 
 /**
  * 城市名称 → 经纬度映射表
@@ -105,6 +105,7 @@ export const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   "Sao Paulo": { lat: -23.5505, lng: -46.6333 },
   "Rio de Janeiro": { lat: -22.9068, lng: -43.1729 },
   "Santiago": { lat: -33.4489, lng: -70.6693 },
+  "Istanbul": { lat: 41.0082, lng: 28.9784 },
 
   // 非洲
   "Cape Town": { lat: -33.9249, lng: 18.4241 },

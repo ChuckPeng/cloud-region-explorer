@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 // ==================== 地图可视化页面 (F9) - 动态导入版本 ====================
 
@@ -101,8 +101,8 @@ export default function MapPage() {
             style={{ height: "100%", width: "100%" }}
           >
             <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; 高德地图 | <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              url="https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}"
             />
             {grouped.map((group, idx) => (
               <MapMarkerContent key={idx} group={group} />
