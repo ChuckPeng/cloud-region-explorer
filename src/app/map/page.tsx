@@ -1,12 +1,12 @@
-"use client";
+﻿"use client";
 
-// ==================== 地图可视化页面 - 中文底图版 ====================
+// ==================== 鍦板浘鍙鍖栭〉闈?- 涓枃搴曞浘鐗?====================
 
 import { useEffect, useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { CloudRegion, VENDOR_LABELS, VENDOR_COLORS, Vendor, VENDORS } from "@/types";
 
-// 动态导入地图组件，禁用 SSR
+// 鍔ㄦ€佸鍏ュ湴鍥剧粍浠讹紝绂佺敤 SSR
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false }
@@ -77,13 +77,13 @@ export default function MapPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">🌍 地图视图</h1>
+        <h1 className="text-2xl font-bold">馃實 鍦板浘瑙嗗浘</h1>
         <select
           value={selectedVendor}
           onChange={(e) => setSelectedVendor(e.target.value)}
           className="px-3 py-2 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--card))] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">全部厂商</option>
+          <option value="all">鍏ㄩ儴鍘傚晢</option>
           {VENDORS.map((v) => (
             <option key={v} value={v}>{VENDOR_LABELS[v]}</option>
           ))}
@@ -99,14 +99,13 @@ export default function MapPage() {
             scrollWheelZoom={true}
             style={{ height: "100%", width: "100%" }}
           >
-            {/* 底图：Carto Voyager（比 OSM 标准版更美观清晰的英文底图） */}
+            {/* 搴曞浘锛欳arto Voyager锛堟瘮 OSM 鏍囧噯鐗堟洿缇庤娓呮櫚鐨勮嫳鏂囧簳鍥撅級 */}
             <TileLayer
-              attribution='&copy; <a href="https://carto.com/">CARTO</a> &amp; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | 中文标注 &copy; 高德'
+              attribution='&copy; <a href="https://carto.com/">CARTO</a> &amp; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | 涓枃鏍囨敞 &copy; 楂樺痉'
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             />
-            {/* 中文标注透明叠加：高德 style=8 纯标注层 */}
+            {/* 涓枃鏍囨敞閫忔槑鍙犲姞锛氶珮寰?style=8 绾爣娉ㄥ眰 */}
             <TileLayer
-              url="https://wprd0{s}.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scl=1&style=8"
               opacity={0.5}
             />
             {grouped.map((group, idx) => (
@@ -117,7 +116,7 @@ export default function MapPage() {
       </div>
 
       <div className="bg-[rgb(var(--card))] border border-[rgb(var(--border))] rounded-xl p-4">
-        <h3 className="font-medium mb-3 text-sm">厂商图例</h3>
+        <h3 className="font-medium mb-3 text-sm">鍘傚晢鍥句緥</h3>
         <div className="flex flex-wrap gap-3">
           {VENDORS.map((v) => (
             <div key={v} className="flex items-center gap-2 text-sm">
@@ -150,7 +149,7 @@ function MapMarkerContent({ group }: { group: { lat: number; lng: number; items:
       <Popup>
         <div className="text-sm max-h-[200px] overflow-y-auto">
           <p className="font-semibold mb-1">{group.items[0].city}, {group.items[0].country}</p>
-          <p className="text-xs text-muted-foreground mb-2">{group.items.length} Region · {totalAzs} AZ</p>
+          <p className="text-xs text-muted-foreground mb-2">{group.items.length} Region 路 {totalAzs} AZ</p>
           {group.items.map((r) => (
             <div key={r.id} className="flex items-center gap-1.5 text-xs">
               <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: VENDOR_COLORS[r.vendor] }} />
