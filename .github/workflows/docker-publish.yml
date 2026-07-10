@@ -1,4 +1,4 @@
-﻿name: Docker Build and Push
+name: Docker Build and Push
 
 on:
   push:
@@ -36,11 +36,6 @@ jobs:
           SHORT_SHA="${GITHUB_SHA::7}"
           TAGS="${IMAGE}:sha-${SHORT_SHA}"
 
-          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
-            # main 分支 = 测试通道，始终推 :beta
-            TAGS="${TAGS},${IMAGE}:beta"
-          fi
-
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION_TAG="${GITHUB_REF#refs/tags/}"
             TAGS="${TAGS},${IMAGE}:${VERSION_TAG}"
@@ -72,12 +67,10 @@ jobs:
           DOCKERHUB_TOKEN="${{ secrets.DOCKERHUB_TOKEN }}"
           DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
 
-          # 获取 token
           TOKEN=$(curl -s -H "Content-Type: application/json" \
             -X POST -d "{\"username\":\"${DOCKERHUB_USERNAME}\",\"password\":\"${DOCKERHUB_TOKEN}\"}" \
             https://hub.docker.com/v2/users/login/ | jq -r .token)
 
-          # 获取所有 sha- 标签，按更新时间排序
           TAGS_JSON=$(curl -s -H "Authorization: JWT ${TOKEN}" \
             "https://hub.docker.com/v2/repositories/${IMAGE}/tags/?page_size=100&ordering=last_updated" \
             | jq '[.results[] | select(.name | startswith("sha-"))] | sort_by(.last_updated) | reverse')
