@@ -60,7 +60,7 @@ export class AwsCollector extends BaseCollector {
         "ap-southeast-5": { name: "Asia Pacific (Malaysia)", country: "Malaysia", city: "Kuala Lumpur", azs: ["ap-southeast-5a","ap-southeast-5b","ap-southeast-5c"] },
         "ap-southeast-6": { name: "Asia Pacific (Philippines)", country: "Philippines", city: "Manila", azs: ["ap-southeast-6a","ap-southeast-6b","ap-southeast-6c"] },
         "ap-southeast-7": { name: "Asia Pacific (Thailand)", country: "Thailand", city: "Bangkok", azs: ["ap-southeast-7a","ap-southeast-7b","ap-southeast-7c"] },
-        "ap-southeast-8": { name: "Asia Pacific (New Zealand)", country: "New Zealand", city: "Auckland", azs: [], status: "planned", planned_date: "TBD" },
+        "ap-southeast-8": { name: "Asia Pacific (New Zealand)", country: "New Zealand", city: "Auckland", azs: ["ap-southeast-8a","ap-southeast-8b","ap-southeast-8c"] },
         "ap-northeast-1": { name: "Asia Pacific (Tokyo)", country: "Japan", city: "Tokyo", azs: ["ap-northeast-1a","ap-northeast-1b","ap-northeast-1c","ap-northeast-1d"] },
         "ap-northeast-2": { name: "Asia Pacific (Seoul)", country: "South Korea", city: "Seoul", azs: ["ap-northeast-2a","ap-northeast-2b","ap-northeast-2c","ap-northeast-2d"] },
         "ap-northeast-3": { name: "Asia Pacific (Osaka)", country: "Japan", city: "Osaka", azs: ["ap-northeast-3a","ap-northeast-3b","ap-northeast-3c"] },
