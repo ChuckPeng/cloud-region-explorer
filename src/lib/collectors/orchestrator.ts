@@ -64,6 +64,7 @@ async function collectVendor(collector: BaseCollector): Promise<{ added: number;
             record.az_count,
             record.status,
             record.region_type,
+            record.planned_date,
             record.data_source_url,
             record.fetched_at,
           ]
