@@ -104,10 +104,6 @@ export default function MapPage() {
               attribution='&copy; <a href="https://carto.com/">CARTO</a> &amp; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | 涓枃鏍囨敞 &copy; 楂樺痉'
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             />
-            {/* 涓枃鏍囨敞閫忔槑鍙犲姞锛氶珮寰?style=8 绾爣娉ㄥ眰 */}
-            <TileLayer
-              opacity={0.5}
-            />
             {grouped.map((group, idx) => (
               <MapMarkerContent key={idx} group={group} />
             ))}
