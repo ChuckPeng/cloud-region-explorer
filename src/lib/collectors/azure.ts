@@ -88,6 +88,18 @@ export class AzureCollector extends BaseCollector {
         { vendor: "azure", region_id: "qatarcentral", region_name: "Qatar Central", country: "Qatar", city: "Doha", az_names: ["qatarcentral-1","qatarcentral-2","qatarcentral-3"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "azure", region_id: "southafricanorth", region_name: "South Africa North", country: "South Africa", city: "Johannesburg", az_names: ["southafricanorth-1","southafricanorth-2","southafricanorth-3"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "azure", region_id: "southafricawest", region_name: "South Africa West", country: "South Africa", city: "Cape Town", az_names: ["southafricawest-1"], status: "active", region_type: "public", data_source_url: sourceUrl },
+        
+        { vendor: "azure", region_id: "saudiarabia", region_name: "Saudi Arabia", country: "Saudi Arabia", city: "Riyadh", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "malaysia", region_name: "Malaysia", country: "Malaysia", city: "Kuala Lumpur", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "indonesia", region_name: "Indonesia", country: "Indonesia", city: "Jakarta", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "taiwan", region_name: "Taiwan", country: "Taiwan", city: "台北", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "newzealandsouth", region_name: "New Zealand South", country: "New Zealand", city: "Christchurch", az_names: [], status: "planned", planned_date: "TBD", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "thailand", region_name: "Thailand", country: "Thailand", city: "Bangkok", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "denmark", region_name: "Denmark", country: "Denmark", city: "Copenhagen", az_names: [], status: "planned", planned_date: "TBD", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "greece", region_name: "Greece", country: "Greece", city: "Athens", az_names: [], status: "planned", planned_date: "TBD", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "finland", region_name: "Finland", country: "Finland", city: "Helsinki", az_names: [], status: "planned", planned_date: "TBD", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "azure", region_id: "philippines", region_name: "Philippines", country: "Philippines", city: "Manila", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+
         // ===== China (21Vianet) =====
         { vendor: "azure", region_id: "chinanorth", region_name: "China North", country: "China", city: "北京", az_names: ["chinanorth-1","chinanorth-2"], status: "active", region_type: "dedicated", data_source_url: sourceUrl },
         { vendor: "azure", region_id: "chinanorth2", region_name: "China North 2", country: "China", city: "北京", az_names: ["chinanorth2-1","chinanorth2-2"], status: "active", region_type: "dedicated", data_source_url: sourceUrl },

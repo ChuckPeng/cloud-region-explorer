@@ -50,8 +50,8 @@ async function collectVendor(collector: BaseCollector): Promise<{ added: number;
 
         db.run(
           `INSERT INTO cloud_regions 
-            (vendor, region_id, region_name, country, city, lat, lng, az_list, az_count, status, region_type, data_source_url, fetched_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (vendor, region_id, region_name, country, city, lat, lng, az_list, az_count, status, region_type, planned_date, data_source_url, fetched_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             record.vendor,
             record.region_id,

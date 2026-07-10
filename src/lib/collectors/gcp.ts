@@ -59,6 +59,14 @@ export class GcpCollector extends BaseCollector {
         { vendor: "gcp", region_id: "asia-southeast2", region_name: "Jakarta", country: "Indonesia", city: "Jakarta", az_names: ["asia-southeast2-a","asia-southeast2-b","asia-southeast2-c"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "gcp", region_id: "australia-southeast1", region_name: "Sydney", country: "Australia", city: "Sydney", az_names: ["australia-southeast1-a","australia-southeast1-b","australia-southeast1-c"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "gcp", region_id: "australia-southeast2", region_name: "Melbourne", country: "Australia", city: "Melbourne", az_names: ["australia-southeast2-a","australia-southeast2-b","australia-southeast2-c"], status: "active", region_type: "public", data_source_url: sourceUrl },
+        
+        { vendor: "gcp", region_id: "africa-south2", region_name: "Cape Town", country: "South Africa", city: "Cape Town", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "gcp", region_id: "me-south2", region_name: "Kuwait", country: "Kuwait", city: "Kuwait City", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "gcp", region_id: "asia-southeast3", region_name: "Malaysia", country: "Malaysia", city: "Kuala Lumpur", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "gcp", region_id: "asia-southeast4", region_name: "Thailand", country: "Thailand", city: "Bangkok", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "gcp", region_id: "asia-east3", region_name: "Philippines", country: "Philippines", city: "Manila", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "gcp", region_id: "southamerica-north2", region_name: "Colombia", country: "Colombia", city: "Bogota", az_names: [], status: "planned", planned_date: "2026", region_type: "public", data_source_url: sourceUrl },
+
         // ===== Middle East & Africa =====
         { vendor: "gcp", region_id: "me-west1", region_name: "Tel Aviv", country: "Israel", city: "Tel Aviv", az_names: ["me-west1-a","me-west1-b","me-west1-c"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "gcp", region_id: "me-central1", region_name: "Doha", country: "Qatar", city: "Doha", az_names: ["me-central1-a","me-central1-b","me-central1-c"], status: "active", region_type: "public", data_source_url: sourceUrl },

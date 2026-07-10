@@ -33,7 +33,7 @@ export class AwsCollector extends BaseCollector {
       const ec2Regions = [...new Set(data.prefixes.filter((p) => p.service === "EC2").map((p) => p.region))];
 
       // AWS Region 元数据（基于 ip-ranges.json EC2 regions + 官网 global-infrastructure 页面）
-      const awsRegionMeta: Record<string, { name: string; country: string; city: string; azs: string[]; status?: string }> = {
+      const awsRegionMeta: Record<string, { name: string; country: string; city: string; azs: string[]; status?: string; planned_date?: string }> = {
         // Americas
         "us-east-1": { name: "US East (N. Virginia)", country: "United States", city: "Virginia", azs: ["us-east-1a","us-east-1b","us-east-1c","us-east-1d","us-east-1e","us-east-1f"] },
         "us-east-2": { name: "US East (Ohio)", country: "United States", city: "Ohio", azs: ["us-east-2a","us-east-2b","us-east-2c"] },
@@ -44,7 +44,7 @@ export class AwsCollector extends BaseCollector {
         "ca-west-1": { name: "Canada West (Calgary)", country: "Canada", city: "Calgary", azs: ["ca-west-1a","ca-west-1b","ca-west-1c"] },
         "sa-east-1": { name: "South America (Sao Paulo)", country: "Brazil", city: "Sao Paulo", azs: ["sa-east-1a","sa-east-1b","sa-east-1c"] },
         "sa-west-1": { name: "South America West (Chile)", country: "Chile", city: "Santiago", azs: ["sa-west-1a","sa-west-1b","sa-west-1c"] },
-        "sa-south-1": { name: "South America (Chile)", country: "Chile", city: "Santiago", azs: [], status: "planned" },
+        "sa-south-1": { name: "South America (Chile)", country: "Chile", city: "Santiago", azs: [], status: "planned", planned_date: "2026" },
         "mx-central-1": { name: "Mexico (Central)", country: "Mexico", city: "Mexico City", azs: ["mx-central-1a","mx-central-1b","mx-central-1c"] },
         // Africa
         "af-south-1": { name: "Africa (Cape Town)", country: "South Africa", city: "Cape Town", azs: ["af-south-1a","af-south-1b","af-south-1c"] },
@@ -78,7 +78,7 @@ export class AwsCollector extends BaseCollector {
         "me-south-1": { name: "Middle East (Bahrain)", country: "Bahrain", city: "Bahrain", azs: ["me-south-1a","me-south-1b","me-south-1c"] },
         "me-central-1": { name: "Middle East (UAE)", country: "UAE", city: "Dubai", azs: ["me-central-1a","me-central-1b","me-central-1c"] },
         "me-west-1": { name: "Middle East (UAE)", country: "UAE", city: "Abu Dhabi", azs: ["me-west-1a","me-west-1b","me-west-1c"] },
-        "me-central-2": { name: "Kingdom of Saudi Arabia", country: "Saudi Arabia", city: "Riyadh", azs: ["me-central-2a","me-central-2b","me-central-2c"], status: "planned" },
+        "me-central-2": { name: "Kingdom of Saudi Arabia", country: "Saudi Arabia", city: "Riyadh", azs: ["me-central-2a","me-central-2b","me-central-2c"], status: "planned", planned_date: "2026" },
         "il-central-1": { name: "Israel (Tel Aviv)", country: "Israel", city: "Tel Aviv", azs: ["il-central-1a","il-central-1b","il-central-1c"] },
         // China
         "cn-north-1": { name: "China (Beijing)", country: "China", city: "北京", azs: ["cn-north-1a","cn-north-1b","cn-north-1c"] },

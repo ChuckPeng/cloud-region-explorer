@@ -92,6 +92,7 @@ export async function initDb(): Promise<SqlJsDatabase> {
       az_count INTEGER NOT NULL DEFAULT 0,
       status TEXT NOT NULL DEFAULT 'active',
       region_type TEXT NOT NULL DEFAULT 'public',
+      planned_date TEXT DEFAULT NULL,
       data_source_url TEXT NOT NULL,
       fetched_at TEXT NOT NULL
     );

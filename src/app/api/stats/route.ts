@@ -42,6 +42,12 @@ export async function GET() {
       }
     }
 
+    
+    const plannedResult = db.exec(
+      "SELECT COUNT(*) as planned_count FROM cloud_regions WHERE status = 'planned'"
+    );
+    const plannedRegions = firstValue(plannedResult, "planned_count") || 0;
+
     const lastUpdatedResult = db.exec("SELECT MAX(fetched_at) as last_updated FROM cloud_regions");
     const lastUpdated = firstValue(lastUpdatedResult, "last_updated") || null;
 
@@ -50,6 +56,7 @@ export async function GET() {
       total_azs: totalAzs,
       vendor_breakdown: vendorBreakdown,
       country_breakdown: countryBreakdown,
+      planned_regions: plannedRegions,
       last_updated: lastUpdated,
     });
   } catch (error) {

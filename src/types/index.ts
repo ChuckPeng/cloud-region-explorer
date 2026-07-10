@@ -44,6 +44,7 @@ export interface CloudRegion {
   status: RegionStatus;
   region_type: RegionType;
   data_source_url: string;
+  planned_date: string | null; // 计划上线日期（仅 planned 状态有效）
   fetched_at: string;    // ISO 8601
 }
 
@@ -57,6 +58,7 @@ export interface RawRegionData {
   az_names: string[];
   status?: string;
   region_type?: string;
+  planned_date?: string;
   data_source_url: string;
 }
 
@@ -84,5 +86,6 @@ export interface StatsResponse {
   total_azs: number;
   vendor_breakdown: Record<string, number>;
   country_breakdown: Record<string, number>;
+  planned_regions: number;
   last_updated: string | null;
 }

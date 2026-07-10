@@ -62,6 +62,7 @@ export default function HomePage() {
         <StatCard icon={Cloud} label="活跃 Region" value={stats.total_regions} color="text-blue-500" />
         <StatCard icon={Server} label="可用区总数" value={stats.total_azs} color="text-green-500" />
         <StatCard icon={MapPin} label="覆盖国家" value={Object.keys(stats.country_breakdown).length} color="text-orange-500" />
+        <StatCard icon={Cloud} label="计划中 Region" value={stats.planned_regions} color="text-yellow-500" />
         <StatCard
           icon={Clock}
           label="最近更新"

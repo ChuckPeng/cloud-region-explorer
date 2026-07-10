@@ -43,6 +43,7 @@ export abstract class BaseCollector {
         az_list: JSON.stringify(item.az_names),
         az_count: item.az_names.length,
         status: (item.status as CloudRegion["status"]) || "active",
+        planned_date: item.planned_date || null,
         region_type: (item.region_type as CloudRegion["region_type"]) || "public",
         data_source_url: item.data_source_url,
         fetched_at: now,
