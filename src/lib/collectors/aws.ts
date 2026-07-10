@@ -1,4 +1,4 @@
-﻿// ==================== AWS 采集器 ====================
+// ==================== AWS 采集器 ====================
 // 数据来源：AWS 官方 IP Ranges API + 官方 Region 表格文档
 // 域名白名单：amazonaws.com, aws.amazon.com, docs.aws.amazon.com
 
@@ -16,13 +16,15 @@ export class AwsCollector extends BaseCollector {
     this.validateUrl(sourceUrl);
 
     try {
+
+
       // AWS 通过 ip-ranges.json 获取 Region 列表来推断
       const ipRangesUrl = "https://ip-ranges.amazonaws.com/ip-ranges.json";
       this.validateUrl(ipRangesUrl);
 
       const response = await fetch(ipRangesUrl);
       if (!response.ok) {
-        throw new Error(`AWS IP Ranges API 返回 ${response.status}`);
+        throw new Error(`AWS IP Ranges API returned ${response.status}`);
       }
 
       const data = await response.json() as {
@@ -33,7 +35,7 @@ export class AwsCollector extends BaseCollector {
       const ec2Regions = [...new Set(data.prefixes.filter((p) => p.service === "EC2").map((p) => p.region))];
 
       // AWS Region 元数据（硬编码自官方文档，因为无公开 Region API）
-      const awsRegionMeta: Record<string, { name: string; country: string; city: string; azs: string[] }> = {
+      const awsRegionMeta: Record<string, { name: string; country: string; city: string; azs: string[]; status?: string }> = {
         "us-east-1": { name: "US East (N. Virginia)", country: "United States", city: "Virginia", azs: ["us-east-1a","us-east-1b","us-east-1c","us-east-1d","us-east-1e","us-east-1f"] },
         "us-east-2": { name: "US East (Ohio)", country: "United States", city: "Ohio", azs: ["us-east-2a","us-east-2b","us-east-2c"] },
         "us-west-1": { name: "US West (N. California)", country: "United States", city: "California", azs: ["us-west-1a","us-west-1b","us-west-1c"] },
@@ -63,8 +65,18 @@ export class AwsCollector extends BaseCollector {
         "me-central-1": { name: "Middle East (UAE)", country: "UAE", city: "Dubai", azs: ["me-central-1a","me-central-1b","me-central-1c"] },
         "il-central-1": { name: "Israel (Tel Aviv)", country: "Israel", city: "Tel Aviv", azs: ["il-central-1a","il-central-1b","il-central-1c"] },
         "sa-east-1": { name: "South America (Sao Paulo)", country: "Brazil", city: "Sao Paulo", azs: ["sa-east-1a","sa-east-1b","sa-east-1c"] },
-        "cn-north-1": { name: "China (Beijing)", country: "China", city: "北京", azs: ["cn-north-1a","cn-north-1b"] },
+        "cn-north-1": { name: "China (Beijing)", country: "China", city: "北京", azs: ["cn-north-1a","cn-north-1b","cn-north-1c"] },
         "cn-northwest-1": { name: "China (Ningxia)", country: "China", city: "银川", azs: ["cn-northwest-1a","cn-northwest-1b","cn-northwest-1c"] },
+        "ap-southeast-5": { name: "Asia Pacific (Malaysia)", country: "Malaysia", city: "Kuala Lumpur", azs: ["ap-southeast-5a","ap-southeast-5b","ap-southeast-5c"] },
+        "ap-southeast-7": { name: "Asia Pacific (Thailand)", country: "Thailand", city: "Bangkok", azs: ["ap-southeast-7a","ap-southeast-7b","ap-southeast-7c"] },
+        "ap-southeast-8": { name: "Asia Pacific (New Zealand)", country: "New Zealand", city: "Auckland", azs: ["ap-southeast-8a","ap-southeast-8b","ap-southeast-8c"] },
+        "ap-east-2": { name: "Asia Pacific (Taipei)", country: "Taiwan", city: "台北", azs: ["ap-east-2a","ap-east-2b","ap-east-2c"] },
+        "mx-central-1": { name: "Mexico (Central)", country: "Mexico", city: "Mexico City", azs: ["mx-central-1a","mx-central-1b","mx-central-1c"] },
+        "sa-south-1": { name: "South America (Chile)", country: "Chile", city: "Santiago", azs: [], status: "planned" },
+        "me-central-2": { name: "Kingdom of Saudi Arabia", country: "Saudi Arabia", city: "Riyadh", azs: ["me-central-2a","me-central-2b","me-central-2c"], status: "planned" },
+        "us-gov-east-1": { name: "AWS GovCloud (US-East)", country: "United States", city: "Virginia", azs: ["us-gov-east-1a","us-gov-east-1b","us-gov-east-1c"] },
+        "us-gov-west-1": { name: "AWS GovCloud (US-West)", country: "United States", city: "Oregon", azs: ["us-gov-west-1a","us-gov-west-1b","us-gov-west-1c"] },
+        "eu-central-3": { name: "AWS European Sovereign Cloud (Germany)", country: "Germany", city: "Berlin", azs: ["eu-central-3a","eu-central-3b","eu-central-3c"] },
       };
 
       for (const regionCode of ec2Regions) {
@@ -77,32 +89,35 @@ export class AwsCollector extends BaseCollector {
             country: meta.country,
             city: meta.city,
             az_names: meta.azs,
-            status: "active",
-            region_type: regionCode.startsWith("cn-") ? "dedicated" : "public",
+            status: (meta as any).status || "active",
+            region_type: regionCode.startsWith("cn-") ? "dedicated" : regionCode.startsWith("us-gov") ? "gov" : "public",
             data_source_url: sourceUrl,
           });
         }
       }
 
-      // 补充可能不在 ip-ranges 中的中国区
-      for (const regionCode of ["cn-north-1", "cn-northwest-1"]) {
-        if (!results.find((r) => r.region_id === regionCode)) {
-          const meta = awsRegionMeta[regionCode];
-          if (meta) {
-            results.push({
-              vendor: "aws",
-              region_id: regionCode,
-              region_name: meta.name,
-              country: meta.country,
-              city: meta.city,
-              az_names: meta.azs,
-              status: "active",
-              region_type: "dedicated",
-              data_source_url: sourceUrl,
-            });
-          }
+
+
+    // 补充不在 ip-ranges 中的 planned / gov / 专有云区域
+    const extraRegions = ["sa-south-1", "me-central-2", "us-gov-east-1", "us-gov-west-1", "eu-central-3", "cn-north-1", "cn-northwest-1", "ap-southeast-5", "ap-southeast-7", "ap-southeast-8", "ap-east-2", "mx-central-1"];
+    for (const code of extraRegions) {
+      if (!results.find((r) => r.region_id === code)) {
+        const meta = awsRegionMeta[code];
+        if (meta) {
+          results.push({
+            vendor: "aws",
+            region_id: code,
+            region_name: meta.name,
+            country: meta.country,
+            city: meta.city,
+            az_names: meta.azs,
+            status: (meta as any).status || "active",
+            region_type: code.startsWith("cn-") ? "dedicated" : code.startsWith("us-gov") ? "gov" : "public",
+            data_source_url: sourceUrl,
+          });
         }
       }
+    }
 
     } catch (error) {
       console.error("[AWS Collector] 采集失败:", error);
