@@ -38,6 +38,8 @@ export class TencentCollector extends BaseCollector {
         { vendor: "tencent", region_id: "na-siliconvalley", region_name: "美国西部（硅谷）", country: "United States", city: "California", az_names: ["na-siliconvalley-1","na-siliconvalley-2","na-siliconvalley-3"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "tencent", region_id: "na-ashburn", region_name: "美国东部（弗吉尼亚）", country: "United States", city: "Virginia", az_names: ["na-ashburn-1","na-ashburn-2","na-ashburn-3"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "tencent", region_id: "na-toronto", region_name: "北美（多伦多）", country: "Canada", city: "Toronto", az_names: ["na-toronto-1"], status: "active", region_type: "public", data_source_url: sourceUrl },
+                { vendor: "tencent", region_id: "ap-taipei", region_name: "亚太东北（台北）", country: "Taiwan", city: "台北", az_names: ["ap-taipei-1","ap-taipei-2","ap-taipei-3"], status: "active", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "tencent", region_id: "ap-frankfurt-v2", region_name: "欧洲地区（法兰克福v2）", country: "Germany", city: "Frankfurt", az_names: ["ap-frankfurt-v2-1","ap-frankfurt-v2-2"], status: "active", region_type: "public", data_source_url: sourceUrl },
         // 南美
         { vendor: "tencent", region_id: "sa-saopaulo", region_name: "南美地区（圣保罗）", country: "Brazil", city: "Sao Paulo", az_names: ["sa-saopaulo-1","sa-saopaulo-2"], status: "active", region_type: "public", data_source_url: sourceUrl },
         // 欧洲

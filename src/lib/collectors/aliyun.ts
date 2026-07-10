@@ -53,6 +53,9 @@ export class AliyunCollector extends BaseCollector {
         // 美国
         { vendor: "aliyun", region_id: "us-west-1", region_name: "美国（Silicon Valley）", country: "United States", city: "California", az_names: ["us-west-1a","us-west-1b"], status: "active", region_type: "public", data_source_url: sourceUrl },
         { vendor: "aliyun", region_id: "us-east-1", region_name: "美国（Virginia）", country: "United States", city: "Virginia", az_names: ["us-east-1a","us-east-1b"], status: "active", region_type: "public", data_source_url: sourceUrl },
+                { vendor: "aliyun", region_id: "cn-zhongwei", region_name: "华北（中卫）", country: "China", city: "中卫", az_names: ["cn-zhongwei-a","cn-zhongwei-b"], status: "active", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "aliyun", region_id: "ap-southeast-8", region_name: "澳大利亚（Melbourne）", country: "Australia", city: "Melbourne", az_names: ["ap-southeast-8a","ap-southeast-8b"], status: "active", region_type: "public", data_source_url: sourceUrl },
+        { vendor: "aliyun", region_id: "eu-west-2", region_name: "英国（Manchester）", country: "United Kingdom", city: "Manchester", az_names: ["eu-west-2a","eu-west-2b"], status: "active", region_type: "public", data_source_url: sourceUrl },
         // 政府云
         { vendor: "aliyun", region_id: "cn-north-2-gov-1", region_name: "华北2（北京）金融云", country: "China", city: "北京", az_names: ["cn-beijing-gov-1a"], status: "active", region_type: "gov", data_source_url: sourceUrl },
       ];

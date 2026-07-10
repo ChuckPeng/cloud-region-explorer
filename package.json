@@ -1,6 +1,6 @@
 {
   "name": "cloud-region-explorer",
-  "version": "1.0.9-beta",
+  "version": "1.1.1-beta",
   "private": true,
   "description": "鍏湁浜戣妭鐐规煡璇㈢郴缁?- AWS/Azure/GCP/闃块噷浜?鍗庝负浜?鑵捐浜?UCloud",
   "scripts": {
