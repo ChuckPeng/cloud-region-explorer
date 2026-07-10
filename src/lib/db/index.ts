@@ -97,16 +97,14 @@ export async function initDb(): Promise<SqlJsDatabase> {
       fetched_at TEXT NOT NULL
     );
 
-  // 兼容旧数据库：自动添加 planned_date 列
+  // 兼容旧数据库：检查并修复缺少 planned_date 列的问题
   try {
-    const cols = _db.exec("PRAGMA table_info(cloud_regions)");
-    const colNames = cols.length > 0 ? cols[0].values.map((r) => r[1]) : [];
-    if (!colNames.includes("planned_date")) {
-      _db.run("ALTER TABLE cloud_regions ADD COLUMN planned_date TEXT DEFAULT NULL");
-      console.log("[DB] 已升级数据库：添加 planned_date 列");
-    }
-  } catch (e) {
-    console.warn("[DB] 数据库升级警告:", e);
+    _db.run("SELECT planned_date FROM cloud_regions LIMIT 0");
+  } catch {
+    console.log("[DB] 检测到旧数据库，正在升级...");
+    try { _db.run("ALTER TABLE cloud_regions ADD COLUMN planned_date TEXT DEFAULT NULL"); } catch {}
+    console.log("[DB] 数据库升级完成");
+  }
   }
 
   `);
