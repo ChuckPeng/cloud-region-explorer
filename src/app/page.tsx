@@ -16,6 +16,7 @@ export default function HomePage() {
     fetch("/api/stats")
       .then((r) => r.json())
       .then((data) => {
+        if (data.error) { console.error("Stats error:", data.message); setLoading(false); return; }
         setStats(data);
         setLoading(false);
       })

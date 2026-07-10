@@ -1,4 +1,6 @@
-﻿// GET /api/stats - 统计概览
+export const dynamic = 'force-dynamic';
+
+// GET /api/stats - 统计概览
 import { NextResponse } from "next/server";
 import { ensureDb } from "@/lib/db";
 

@@ -1,0 +1,12 @@
+﻿{
+  "project": "cloud-region-explorer",
+  "phase": "phase-4-cicd-deliver",
+  "version": "1.0.4-beta",
+  "task": { "status": "completed" },
+  "delivery": {
+    "commit": "d52c1f2",
+    "tag": "v1.0.4-beta",
+    "branch": "main",
+    "dockerhub": "ChuckPeng/cloud-region-explorer:beta, :v1.0.4-beta"
+  }
+}

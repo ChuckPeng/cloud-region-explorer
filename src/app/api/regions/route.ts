@@ -1,4 +1,6 @@
-﻿// GET /api/regions - 查询 Region 数据
+export const dynamic = 'force-dynamic';
+
+// GET /api/regions - 查询 Region 数据
 import { NextRequest, NextResponse } from "next/server";
 import { ensureDb } from "@/lib/db";
 
