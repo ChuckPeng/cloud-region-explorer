@@ -113,11 +113,15 @@ export async function runCollection(vendor?: Vendor): Promise<CollectResponse> {
     totalUpdated += result.updated;
     allErrors.push(...result.errors);
 
-    // 记录采集日志
-    getDb().run(
+    // 记录采集日志（兼容旧数据库）
+    try {
+      getDb().run(
       "INSERT INTO collect_logs (vendor, regions_added, regions_updated, errors, duration_ms, created_at) VALUES (?, ?, ?, ?, ?, ?)",
       [v, result.added, result.updated, JSON.stringify(result.errors), 0, now]
     );
+    } catch (e) {
+      console.warn("[Orchestrator] collect_logs 写入失败:", e);
+    }
     saveDb();
 
     console.log(`[Orchestrator] ${v} 采集完成: +${result.added} ~${result.updated} err:${result.errors.length}`);
