@@ -20,14 +20,14 @@ export const VENDOR_LABELS: Record<Vendor, string> = {
 
 /** 厂商颜色映射（Tailwind 颜色） */
 export const VENDOR_COLORS: Record<Vendor, string> = {
-  aws: "#E74C3C",
-  azure: "#3498DB",
-  gcp: "#F39C12",
-  aliyun: "#2ECC71",
-  huawei: "#9B59B6",
-  tencent: "#1ABC9C",
-  ucloud: "#E91E63",
-};;;;;;
+  aws: "#E67E22",
+  azure: "#2980B9",
+  gcp: "#E74C3C",
+  aliyun: "#F1C40F",
+  huawei: "#8E44AD",
+  tencent: "#27AE60",
+  ucloud: "#7F8C8D",
+};;;;;;;
 
 /** 数据库中的 Region 记录 */
 export interface CloudRegion {
