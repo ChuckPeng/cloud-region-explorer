@@ -125,16 +125,24 @@ export default function MapPage() {
 }
 
 function MapMarkerContent({ group }: { group: { lat: number; lng: number; items: CloudRegion[] } }) {
-  const primaryColor = VENDOR_COLORS[group.items[0].vendor] || "#3B82F6";
+  const vendors = [...new Set(group.items.map(r => r.vendor))];
+  const markerColor = vendors.length === 1
+    ? VENDOR_COLORS[vendors[0]]
+    : "#555555";
   const totalAzs = group.items.reduce((sum, r) => sum + r.az_count, 0);
 
   const L = require("leaflet");
 
+  const size = vendors.length === 1 ? 14 : 20;
+  const html = vendors.length === 1
+    ? '<div style="background:' + markerColor + ';width:' + size + 'px;height:' + size + 'px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.3);"></div>'
+    : '<div style="background:' + markerColor + ';width:' + size + 'px;height:' + size + 'px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold">' + vendors.length + '</div>';
+
   const icon = L.divIcon({
     className: "custom-marker",
-    html: `<div style="background:${primaryColor};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
+    html: html,
+    iconSize: [size + 4, size + 4],
+    iconAnchor: [size/2 + 2, size/2 + 2],
   });
 
   return (
