@@ -22,12 +22,12 @@ export const VENDOR_LABELS: Record<Vendor, string> = {
 export const VENDOR_COLORS: Record<Vendor, string> = {
   aws: "#FF9900",
   azure: "#0078D4",
-  gcp: "#4285F4",
+  gcp: "#EA4335",
   aliyun: "#FF6A00",
   huawei: "#CF0A2C",
-  tencent: "#006EFF",
-  ucloud: "#00A0E9",
-};
+  tencent: "#00A86B",
+  ucloud: "#6A0DAD",
+};;
 
 /** 数据库中的 Region 记录 */
 export interface CloudRegion {
