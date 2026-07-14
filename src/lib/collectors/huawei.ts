@@ -1,6 +1,8 @@
-﻿// ==================== 华为云采集器 ====================
-// 数据来源：华为云官方文档 - 区域和终端节点
-// 域名白名单：huaweicloud.com, developer.huaweicloud.com
+﻿// ==================== 采集器校验信息 ====================
+// 最后核对日期：2026-07-10
+// 数据来源：https://www.huaweicloud.com/about/global-infrastructure.html + https://developer.huaweicloud.com/endpoint
+// Region 总数：23（含 planned）
+// 维护建议：每季度人工核对一次官网
 
 import { BaseCollector } from "./base";
 import { Vendor, RawRegionData } from "@/types";

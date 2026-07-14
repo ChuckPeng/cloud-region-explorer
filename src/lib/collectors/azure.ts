@@ -1,9 +1,8 @@
-// ==================== Azure 采集器 ====================
-// 数据来源：Microsoft Learn / Azure 全球基础设施
-// https://datacenters.microsoft.com/globe/explore?view=map
-// https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
-// 域名白名单：learn.microsoft.com, azure.microsoft.com, microsoft.com
-// 数据更新时间：2026-07-10（对照官网完整 Region 列表）
+// ==================== 采集器校验信息 ====================
+// 最后核对日期：2026-07-10
+// 数据来源：https://datacenters.microsoft.com/globe/explore + https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview
+// Region 总数：68（含 planned）
+// 维护建议：每季度人工核对一次官网
 
 import { BaseCollector } from "./base";
 import { Vendor, RawRegionData } from "@/types";

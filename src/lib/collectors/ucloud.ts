@@ -1,6 +1,8 @@
-﻿// ==================== UCloud 采集器 ====================
-// 数据来源：UCloud 官方 API 文档 - 地域列表
-// 域名白名单：ucloud.cn, docs.ucloud.cn, api.ucloud.cn
+﻿// ==================== 采集器校验信息 ====================
+// 最后核对日期：2026-07-10
+// 数据来源：https://docs.ucloud.cn/api/summary/regionlist
+// Region 总数：22（含 planned）
+// 维护建议：每季度人工核对一次官网
 
 import { BaseCollector } from "./base";
 import { Vendor, RawRegionData } from "@/types";

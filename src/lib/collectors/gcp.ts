@@ -1,8 +1,8 @@
-// ==================== GCP 采集器 ====================
-// 数据来源：Google Cloud 官方 Locations 页面
-// https://cloud.google.com/about/locations?hl=zh-cn
-// 域名白名单：cloud.google.com, googleapis.com
-// 数据更新时间：2026-07-10（对照官网 locations 页面完整列表）
+// ==================== 采集器校验信息 ====================
+// 最后核对日期：2026-07-10
+// 数据来源：https://cloud.google.com/about/locations?hl=zh-cn
+// Region 总数：48（含 planned）
+// 维护建议：每季度人工核对一次官网
 
 import { BaseCollector } from "./base";
 import { Vendor, RawRegionData } from "@/types";

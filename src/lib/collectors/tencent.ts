@@ -1,6 +1,8 @@
-﻿// ==================== 腾讯云采集器 ====================
-// 数据来源：腾讯云官方文档 - 地域和可用区
-// 域名白名单：tencent.com, cloud.tencent.com
+﻿// ==================== 采集器校验信息 ====================
+// 最后核对日期：2026-07-10
+// 数据来源：https://www.tencentcloud.com/zh/global-infrastructure + https://cloud.tencent.com/document/product/213/6091
+// Region 总数：25（含 planned）
+// 维护建议：每季度人工核对一次官网
 
 import { BaseCollector } from "./base";
 import { Vendor, RawRegionData } from "@/types";

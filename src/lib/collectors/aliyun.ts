@@ -1,6 +1,8 @@
-﻿// ==================== 阿里云采集器 ====================
-// 数据来源：阿里云官方帮助文档 - 地域和可用区
-// 域名白名单：aliyun.com, aliyuncs.com
+﻿// ==================== 采集器校验信息 ====================
+// 最后核对日期：2026-07-10
+// 数据来源：https://help.aliyun.com/zh/document_detail/40654.html + https://www.alibabacloud.com/zh/global-locations
+// Region 总数：35（含 planned）
+// 维护建议：每季度人工核对一次官网
 
 import { BaseCollector } from "./base";
 import { Vendor, RawRegionData } from "@/types";
