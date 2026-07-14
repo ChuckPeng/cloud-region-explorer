@@ -1,8 +1,8 @@
-export const dynamic = 'force-dynamic';
-
 // GET /api/stats - 统计概览
 import { NextResponse } from "next/server";
 import { ensureDb } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 function firstValue(result: any, field: string): any {
   if (result.length > 0 && result[0].values.length > 0) {

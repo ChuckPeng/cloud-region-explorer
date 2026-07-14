@@ -1,8 +1,8 @@
-export const dynamic = 'force-dynamic';
-
 // POST /api/collect - 手动触发数据采集（含速率限制）
 import { NextRequest, NextResponse } from "next/server";
 import { ensureDb } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 import { runCollection } from "@/lib/collectors/orchestrator";
 import { VENDORS, Vendor } from "@/types";
 import { z } from "zod";
