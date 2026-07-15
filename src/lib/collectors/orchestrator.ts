@@ -140,12 +140,12 @@ export async function runCollection(vendor?: Vendor): Promise<CollectResponse> {
 }
 
 async function main() {
-  const { initDb, closeDb } = await import("../db");
-  await initDb();
+  const { sqlJsStorage } = await import("../db");
+  await sqlJsStorage.init();
   console.log("[Orchestrator] 开始全量采集...");
   const result = await runCollection();
   console.log("[Orchestrator] 采集完成:", JSON.stringify(result, null, 2));
-  closeDb();
+  
   process.exit(0);
 }
 

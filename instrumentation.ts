@@ -3,8 +3,8 @@
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
-    const { initDb } = await import("@/lib/db");
-    await initDb();
+    const { sqlJsStorage } = await import("@/lib/db");
+    await sqlJsStorage.init();
 
     // 启动定时采集（如果启用）
     if (process.env.CRON_ENABLED !== "false") {
