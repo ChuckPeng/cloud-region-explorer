@@ -27,7 +27,7 @@ export default function RegionsPage() {
       params.set("page", String(page));
       params.set("limit", String(limit));
 
-      const res = await fetch(`/api/regions?${params}`);
+      const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/api/regions?" + params.toString());
       const json = await res.json();
       setData(json);
     } catch (err) {

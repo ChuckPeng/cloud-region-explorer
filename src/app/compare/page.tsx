@@ -16,7 +16,7 @@ export default function ComparePage() {
   const [viewMode, setViewMode] = useState<"country" | "city">("country");
 
   useEffect(() => {
-    fetch("/api/regions?limit=500&status=active")
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/api/regions?limit=500&status=active")
       .then((r) => r.json())
       .then((data) => {
         setRegions(data.data || []);

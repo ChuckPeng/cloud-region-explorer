@@ -1,0 +1,9 @@
+# Cloudflare Pages 配置
+name = "cloud-region-explorer"
+compatibility_date = "2026-07-15"
+
+# Pages 通过 Cloudflare Dashboard 或 wrangler pages deploy 部署
+# 无需在此配置 routes
+
+[env.production]
+NEXT_PUBLIC_API_BASE_URL = "https://your-docker-host:3000"

@@ -13,7 +13,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/stats")
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/api/stats")
       .then((r) => r.json())
       .then((data) => {
         if (data.error) { console.error("Stats error:", data.message); setLoading(false); return; }

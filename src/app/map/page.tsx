@@ -34,7 +34,7 @@ export default function MapPage() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/regions?limit=500")
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/api/regions?limit=500")
       .then((r) => r.json())
       .then((data) => {
         setRegions(data.data || []);
