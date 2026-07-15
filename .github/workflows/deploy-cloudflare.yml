@@ -1,0 +1,60 @@
+name: Deploy to Cloudflare (Workers + Pages)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  deploy-worker:
+    runs-on: ubuntu-latest
+    environment: cloudflare
+    outputs:
+      worker_url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy Workers API
+        uses: cloudflare/wrangler-action@v3
+        id: deploy
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: "worker"
+          command: deploy
+
+  deploy-pages:
+    needs: deploy-worker
+    runs-on: ubuntu-latest
+    environment: cloudflare
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Remove API routes (static export)
+        run: rm -rf src/app/api
+      - name: Build static frontend
+        run: |
+          cp next.config.cf.js next.config.js
+          npm run build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: https://cloud-region-explorer-api.${{ vars.CF_WORKERS_SUBDOMAIN }}.workers.dev
+      - name: Deploy to Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ./out --project-name=cloud-region-explorer --branch=main
+
+  collect-data:
+    needs: deploy-worker
+    runs-on: ubuntu-latest
+    environment: cloudflare
+    steps:
+      - name: Trigger initial data collection
+        run: |
+          curl -X POST https://cloud-region-explorer-api.${{ vars.CF_WORKERS_SUBDOMAIN }}.workers.dev/api/collect \
+            -H "Content-Type: application/json" \
+            -d '{}' || echo "Collection triggered (may take time)"
