@@ -37,7 +37,7 @@
    | **Branch** | `main` |
    | **Path** | `/worker` |
    | **Build command** | *(留空)* |
-   | **Deploy command** | `npx wrangler deploy` |
+   | **Deploy command** | `npx wrangler deploy --env=""` |
 
 8. 点击 **保存并部署**
 

@@ -1,6 +1,6 @@
 name = "cloud-region-explorer-api"
-main = "worker/index.ts"
-compatibility_date = "2026-07-15"
+main = "index.ts"
+compatibility_date = "2026-07-16"
 
 [[d1_databases]]
 binding = "CLOUD_REGIONS_DB"
@@ -8,8 +8,4 @@ database_name = "cloud-regions-db"
 database_id = ""
 
 [triggers]
-crons = ["0 0 * * *"]
-
-[env.production]
-[env.production.triggers]
 crons = ["0 0 * * *"]
