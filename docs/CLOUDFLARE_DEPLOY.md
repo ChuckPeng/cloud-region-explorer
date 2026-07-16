@@ -1,121 +1,108 @@
 ﻿# Cloudflare Dashboard 一键部署指南
-> 零命令行，全部在 Cloudflare 网页上操作，10 分钟完成
+> 零命令行，全部在 Cloudflare 网页操作，5 分钟完成
 
 ---
 
-## 准备
+## 前置准备
 
-1. 打开 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. Fork 本仓库到你的 GitHub：`ChuckPeng/cloud-region-explorer`
+1. Fork 本仓库到你的 GitHub
+2. 获取 [Cloudflare API Token](https://dash.cloudflare.com/profile/api-tokens)（需要 Workers 和 D1 权限）
+3. 获取 [Cloudflare Account ID](https://dash.cloudflare.com/)（首页右侧）
 
 ---
 
 ## 第一步：创建 D1 数据库
 
-1. 左侧菜单 → **Workers & Pages** → **D1**
-2. 点击右上角 **创建数据库**
-3. 数据库名称填：`cloud-regions-db`
-4. 点击 **创建**
-5. 记录创建完成后的 **Database ID**（类似 `a1b2c3d4-xxxx-xxxx-xxxx-xxxxxxxxxxxx`）
+1. Cloudflare Dashboard → **Workers & Pages** → 左侧 **D1**
+2. 点击 **创建数据库** → 名称填 `cloud-regions-db` → **创建**
+3. 记下 **Database ID**（类似 `143b0415-...`）
 
 ---
 
-## 第二步：部署 Workers API
+## 第二步：设置 GitHub Secrets
 
-1. Workers & Pages → **概述** → **创建应用程序** → 选 **Workers**
-2. 点击 **"从 Git 仓库部署"** → 授权 GitHub → 选择你的仓库
-3. 配置构建：
+在 GitHub 仓库 → **Settings** → **Secrets and variables** → **Actions**：
 
-   | 字段 | 值 |
-   |------|-----|
-   | **Production branch** | `main` |
-   | **Root directory** | `/worker` |
-   | **Build command** | `npm install` |
-   | **Deploy command** | `npx wrangler deploy --env=""` |
-
-4. 点击 **保存并部署**
-
-> 第一次部署会**失败**，因为还没有绑定 D1。接下来绑定。
+| Name | Value |
+|------|-------|
+| `CF_API_TOKEN` | 你的 API Token |
+| `CF_ACCOUNT_ID` | 你的 Account ID |
 
 ---
 
-## 第三步：绑定 D1 数据库
+## 第三步：更新 wrangler.toml
 
-1. 进入刚创建的 Worker → **设置** → **绑定**（部分界面在 **Variables and secrets** 下方）
-2. 找到 **D1 数据库绑定** 区域 → 点击 **添加绑定**
-3. 填写：
+编辑 `worker/wrangler.toml`，将 `database_id` 改为第一步记录的 ID：
 
-   | 字段 | 值 |
-   |------|-----|
-   | **Variable name** | `CLOUD_REGIONS_DB` |
-   | **D1 database** | 选择 `cloud-regions-db` |
-
-4. 点击 **保存**
-
----
-
-## 第四步：填入 D1 database_id 到 wrangler.toml
-
-1. 回到 GitHub 仓库，编辑 `worker/wrangler.toml`
-2. 将第一步记录的 Database ID 填入：
-
-   ```toml
-   [[d1_databases]]
-   binding = "CLOUD_REGIONS_DB"
-   database_name = "cloud-regions-db"
-   database_id = "你的-Database-ID-这里"
-   ```
-
-3. 提交 → Cloudflare 自动重新部署
-
----
-
-## 第五步：初始化 D1 表结构
-
-1. Workers & Pages → 左侧 **D1** → 点击 `cloud-regions-db`
-2. 点击顶部的 **控制台** 标签
-3. 打开本仓库 `worker/schema.sql`，复制全部 SQL
-4. 粘贴到 D1 Console → 点击 **执行**
-
----
-
-## 第六步：定时触发器
-
-1. 进入 Worker → **触发器** → **Cron 触发器** → 添加
-2. 填写：
-
-   | 字段 | 值 |
-   |------|-----|
-   | **名称** | `daily-collect` |
-   | **Cron 表达式** | `0 0 * * *`（每天 UTC 00:00） |
-
----
-
-## 第七步：触发首次数据同步
-
-Worker 本身不做采集。你需要先在 **Docker 端** 采集数据后同步过来。
-
-Docker 端运行：
-```bash
-# 先采集数据
-curl -X POST http://localhost:3000/api/collect
-
-# 再同步到 Cloudflare Worker
-curl -X POST https://你的worker域名.workers.dev/api/sync \
-  -H "Content-Type: application/json" \
-  -d "{\"vendor\":\"all\",\"regions\":[...]}"  # 从本地 DB 导出
+```toml
+[[d1_databases]]
+binding = "CLOUD_REGIONS_DB"
+database_name = "cloud-regions-db"
+database_id = "你的-Database-ID"
 ```
 
-或者在 Docker 端的 `.env` 中配置：
-```
-CF_SYNC_URL=https://你的worker域名.workers.dev/api/sync
-```
+提交 → 自动触发 GitHub Actions 部署。
 
 ---
 
-## 完成！
+## 第四步：初始化 D1 表结构
 
-| 资源 | 地址 |
-|------|------|
-| API | `https://cloud-region-explorer-api.xxx.workers.dev/api/stats` |
-| 定时同步 | 每天 UTC 00:00（Worker cron）+ Docker 侧定时同步 |
+GitHub → **Actions** → 左侧 **Init D1 Database** → **Run workflow**
+
+---
+
+## 第五步：触发首次数据采集
+
+部署完成后，访问：
+
+```
+https://cloud-region-explorer-api.你的后缀.workers.dev/api/collect
+```
+
+或者在浏览器中直接 POST（用 fetch）：
+
+```js
+fetch("https://cloud-region-explorer-api.xxx.workers.dev/api/collect", { method: "POST" })
+```
+
+等待 30-60 秒后访问 `/api/stats` 查看采集结果。
+
+---
+
+## 部署架构
+
+| Worker 名称 | 用途 | URL |
+|------------|------|-----|
+| `cloud-region-explorer-api` | 查询 API + 采集调度 | `...workers.dev/api/stats` |
+| `cloud-region-explorer-aws` | AWS 采集 | 内部 |
+| `cloud-region-explorer-azure` | Azure 采集 | 内部 |
+| `cloud-region-explorer-gcp` | GCP 采集 | 内部 |
+| `cloud-region-explorer-aliyun` | 阿里云采集 | 内部 |
+| `cloud-region-explorer-huawei` | 华为云采集 | 内部 |
+| `cloud-region-explorer-tencent` | 腾讯云采集 | 内部 |
+| `cloud-region-explorer-ucloud` | UCloud 采集 | 内部 |
+
+所有 Worker 共享 `cloud-regions-db` D1 数据库。
+
+## 定时采集
+
+每个 collector Worker 有独立的 cron 触发器，每天错开时间执行：
+
+| Collector | Cron (UTC) |
+|-----------|------------|
+| AWS | 00:30 |
+| Azure | 01:30 |
+| GCP | 02:30 |
+| Aliyun | 03:30 |
+| Huawei | 04:30 |
+| Tencent | 05:30 |
+| UCloud | 06:30 |
+
+## API 端点
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/api/stats` | GET | 总览统计 |
+| `/api/regions?vendor=&country=&search=&page=&limit=` | GET | 区域列表 |
+| `/api/collect` | POST | 触发全量采集 |
+| `/api/sync` | POST | Docker 端数据同步 |

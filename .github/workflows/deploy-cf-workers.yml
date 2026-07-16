@@ -1,0 +1,38 @@
+﻿name: Deploy Cloudflare Workers
+
+# 当 main 分支 push 或 tag push 时触发
+on:
+  push:
+    branches: [main]
+    paths:
+      - "worker/**"
+  workflow_dispatch:
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy API Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: "worker"
+          command: deploy
+
+  deploy-collectors:
+    needs: deploy-api
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        collector: [aws, azure, gcp, aliyun, huawei, tencent, ucloud]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy ${{ matrix.collector }} Collector
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: "worker"
+          command: deploy --env ${{ matrix.collector }}-collector
