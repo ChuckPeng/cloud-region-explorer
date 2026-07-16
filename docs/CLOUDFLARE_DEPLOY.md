@@ -34,8 +34,8 @@
 
    | 字段 | 值 |
    |------|-----|
-   | **Production branch** | `main` |
-   | **Root directory** | `worker` |
+   | **Branch** | `main` |
+   | **Path** | `/worker` |
    | **Build command** | *(留空)* |
    | **Deploy command** | `npx wrangler deploy` |
 
@@ -108,9 +108,9 @@ npx wrangler d1 execute cloud-regions-db --file=worker/schema.sql --remote
 
    | 字段 | 值 |
    |------|-----|
-   | **Framework preset** | `Next.js (Static HTML Export)` |
+   | **Framework preset** | `None` / `Next.js` |
    | **Build command** | `cp next.config.cf.js next.config.js && npm install && npm run build` |
-   | **Build output directory** | `out` |
+   | **Output directory** | `/out` |
 
 6. 展开 **环境变量** → 添加：
 
