@@ -45,44 +45,36 @@
 
 ---
 
-## 第三步：绑定 D1 数据库到 Worker
+## 第三步：获取 D1 数据库 ID 并写入配置
 
-1. Workers & Pages → 点你刚创建的 Worker（名称类似 `cloud-region-explorer-api`）
-2. 点击 **设置**（Settings）标签
-3. 左侧菜单 → **绑定**（Bindings）
-4. 点击 **添加** → 选择 **D1 数据库**
-5. 填写：
+1. Workers & Pages → 左侧点 **D1**
+2. 点击 `cloud-regions-db` 数据库
+3. 复制页面上的 **Database ID**（一串 UUID，类似 `a1b2c3d4-...`）
+4. 回到 GitHub，编辑 `worker/wrangler.toml`
+5. 把 `database_id = ""` 改成你复制的 ID：
 
-   | 字段 | 值 |
-   |------|-----|
-   | **Variable name** | `CLOUD_REGIONS_DB` |
-   | **D1 database** | 选择 `cloud-regions-db` |
+   ```toml
+   [[d1_databases]]
+   binding = "CLOUD_REGIONS_DB"
+   database_name = "cloud-regions-db"
+   database_id = "a1b2c3d4-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+   ```
 
-6. 点击 **保存**
+6. 提交 → Cloudflare 自动重新部署，Worker 就绑定好 D1 了
 
 ---
 
 ## 第四步：初始化 D1 数据库表结构
 
-> 这一步**必须用一次命令行**，因为 D1 没有网页 SQL 编辑器
+1. Workers & Pages → 左侧点 **D1**
+2. 点击 `cloud-regions-db` 数据库
+3. 点击顶部的 **Console**（控制台）标签
+4. 打开本仓库的 [worker/schema.sql](https://github.com/ChuckPeng/cloud-region-explorer/blob/main/worker/schema.sql)
+5. 复制全部 SQL 内容
+6. 粘贴到 D1 Console 的输入框
+7. 点击 **执行**（Execute）
 
-打开终端，执行：
-
-```bash
-# 安装 wrangler（只需一次）
-npm install -g wrangler
-
-# 登录 Cloudflare
-wrangler login
-
-# 执行初始化 SQL
-npx wrangler d1 execute cloud-regions-db --file=worker/schema.sql --remote
-```
-
-如果不想装 wrangler，可以用 Cloudflare Dashboard 的 D1 Console：
-1. Workers & Pages → **D1** → 点 `cloud-regions-db`
-2. 点 **控制台**（Console）
-3. 打开本仓库的 `worker/schema.sql`，把内容复制粘贴进去，点执行
+> 如果有多条语句，可能需要逐条执行
 
 ---
 
