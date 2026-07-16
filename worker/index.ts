@@ -1,6 +1,6 @@
-// ==================== Cloudflare Workers API (Standalone) ====================
-// ∂¿¡¢”⁄ Next.js ¥˙¬Î£¨Ωˆ“¿¿µ Cloudflare D1 ∫Õæ≤Ã¨”≥…‰ ˝æ›
-// ≤…ºØπ§◊˜”… Docker ∂À∏∫‘£ªWorker ∏∫‘≤È—Ø API
+Ôªø// ==================== Cloudflare Workers API (Standalone) ====================
+// Áã¨Á´ã‰∫é Next.js ‰ª£Á†ÅÔºå‰ªÖ‰æùËµñ Cloudflare D1 ÂíåÈùôÊÄÅÊò†Â∞ÑÊï∞ÊçÆ
+// ÈááÈõÜÂ∑•‰ΩúÁî± Docker Á´ØË¥üË¥£ÔºõWorker Ë¥üË¥£Êü•ËØ¢ API
 
 export interface Env {
   CLOUD_REGIONS_DB: D1Database;
@@ -19,10 +19,10 @@ function json(data: unknown, status = 200): Response {
   });
 }
 
-// ========== DB ≥ı ºªØ ==========
+// ========== DB ÂàùÂßãÂåñÔºàD1 ‰∏çÊîØÊåÅ exec Â§öÊù°SQLÔºåÊîπÁî® batchÔºâ==========
 async function initDB(db: D1Database): Promise<void> {
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS cloud_regions (
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS cloud_regions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       vendor TEXT NOT NULL,
       region_id TEXT NOT NULL,
@@ -31,58 +31,54 @@ async function initDB(db: D1Database): Promise<void> {
       city TEXT NOT NULL,
       lat REAL NOT NULL DEFAULT 0,
       lng REAL NOT NULL DEFAULT 0,
-      az_list TEXT NOT NULL DEFAULT "[]",
+      az_list TEXT NOT NULL DEFAULT '[]',
       az_count INTEGER NOT NULL DEFAULT 0,
-      status TEXT NOT NULL DEFAULT "active",
-      region_type TEXT NOT NULL DEFAULT "public",
+      status TEXT NOT NULL DEFAULT 'active',
+      region_type TEXT NOT NULL DEFAULT 'public',
       planned_date TEXT DEFAULT NULL,
-      data_source_url TEXT NOT NULL DEFAULT "",
-      fetched_at TEXT NOT NULL DEFAULT ""
-    );
-  `);
-
-  await db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_vendor_region ON cloud_regions(vendor, region_id);`);
-  await db.exec(`CREATE INDEX IF NOT EXISTS idx_vendor ON cloud_regions(vendor);`);
-  await db.exec(`CREATE INDEX IF NOT EXISTS idx_country ON cloud_regions(country);`);
-  await db.exec(`CREATE INDEX IF NOT EXISTS idx_status ON cloud_regions(status);`);
-
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS collect_logs (
+      data_source_url TEXT NOT NULL DEFAULT '',
+      fetched_at TEXT NOT NULL DEFAULT ''
+    )`),
+    db.prepare("CREATE UNIQUE INDEX IF NOT EXISTS idx_vendor_region ON cloud_regions(vendor, region_id)"),
+    db.prepare("CREATE INDEX IF NOT EXISTS idx_vendor ON cloud_regions(vendor)"),
+    db.prepare("CREATE INDEX IF NOT EXISTS idx_country ON cloud_regions(country)"),
+    db.prepare("CREATE INDEX IF NOT EXISTS idx_status ON cloud_regions(status)"),
+    db.prepare(`CREATE TABLE IF NOT EXISTS collect_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       vendor TEXT NOT NULL,
       regions_added INTEGER NOT NULL DEFAULT 0,
       regions_updated INTEGER NOT NULL DEFAULT 0,
-      errors TEXT NOT NULL DEFAULT "[]",
-      created_at TEXT NOT NULL DEFAULT ""
-    );
-  `);
+      errors TEXT NOT NULL DEFAULT '[]',
+      created_at TEXT NOT NULL DEFAULT ''
+    )`),
+  ]);
 }
 
 // ========== API: GET /api/stats ==========
 async function handleStats(db: D1Database): Promise<Response> {
   const summary = await db
-    .prepare("SELECT COUNT(*) as total_regions, COALESCE(SUM(az_count), 0) as total_azs FROM cloud_regions WHERE status = \"active\"")
+    .prepare('SELECT COUNT(*) as total_regions, COALESCE(SUM(az_count), 0) as total_azs FROM cloud_regions WHERE status = "active"')
     .first<{ total_regions: number; total_azs: number }>();
 
   const totalRegions = summary?.total_regions || 0;
   const totalAzs = summary?.total_azs || 0;
 
   const { results: vendorRows } = await db
-    .prepare("SELECT vendor, COUNT(*) as count FROM cloud_regions WHERE status = \"active\" GROUP BY vendor ORDER BY count DESC")
+    .prepare('SELECT vendor, COUNT(*) as count FROM cloud_regions WHERE status = "active" GROUP BY vendor ORDER BY count DESC')
     .all<{ vendor: string; count: number }>();
 
   const vendorBreakdown: Record<string, number> = {};
   (vendorRows || []).forEach((r) => { vendorBreakdown[r.vendor] = r.count; });
 
   const { results: countryRows } = await db
-    .prepare("SELECT country, COUNT(*) as count FROM cloud_regions WHERE status = \"active\" GROUP BY country ORDER BY count DESC LIMIT 15")
+    .prepare('SELECT country, COUNT(*) as count FROM cloud_regions WHERE status = "active" GROUP BY country ORDER BY count DESC LIMIT 15')
     .all<{ country: string; count: number }>();
 
   const countryBreakdown: Record<string, number> = {};
   (countryRows || []).forEach((r) => { countryBreakdown[r.country] = r.count; });
 
   const planned = await db
-    .prepare("SELECT COUNT(*) as planned_count FROM cloud_regions WHERE status = \"planned\"")
+    .prepare('SELECT COUNT(*) as planned_count FROM cloud_regions WHERE status = "planned"')
     .first<{ planned_count: number }>();
 
   const last = await db
@@ -117,18 +113,18 @@ async function handleRegions(db: D1Database, url: URL): Promise<Response> {
   if (status) { conditions.push("status = ?"); bindings.push(status); }
   if (search) {
     conditions.push("(region_name LIKE ? OR region_id LIKE ? OR city LIKE ? OR country LIKE ?)");
-    const s = `%${search}%`;
+    const s = "%"+search+"%";
     bindings.push(s, s, s, s);
   }
 
-  const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+  const where = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
 
   const queryData = db
-    .prepare(`SELECT * FROM cloud_regions ${where} ORDER BY vendor, country, city LIMIT ? OFFSET ?`)
+    .prepare("SELECT * FROM cloud_regions "+where+" ORDER BY vendor, country, city LIMIT ? OFFSET ?")
     .bind(...bindings, limit, offset);
 
   const queryCount = db
-    .prepare(`SELECT COUNT(*) as total FROM cloud_regions ${where}`)
+    .prepare("SELECT COUNT(*) as total FROM cloud_regions "+where)
     .bind(...bindings);
 
   const [{ results: data }, { results: countRows }] = await Promise.all([
@@ -180,7 +176,7 @@ export default {
         return handleRegions(db, url);
       }
 
-      // POST /api/sync °™ Ω” ’ Docker ≤…ºØ∂ÀÕ¨≤Ωµƒ ˝æ›
+      // POST /api/sync
       if (path === "/api/sync" && request.method === "POST") {
         const body: any = await request.json().catch(() => null);
         if (!body || !body.regions || !Array.isArray(body.regions)) {
@@ -189,38 +185,32 @@ export default {
 
         const { regions } = body;
         let inserted = 0;
-        const batchStmt = db.prepare(
-          `INSERT OR REPLACE INTO cloud_regions
-           (vendor, region_id, region_name, country, city, lat, lng, az_list, az_count, status, region_type, planned_date, data_source_url, fetched_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-        );
-
         const batch: D1PreparedStatement[] = [];
         for (const r of regions) {
-          if (batch.length >= 50) {
-            await db.batch(batch);
-            inserted += batch.length;
-            batch.length = 0;
-          }
           batch.push(
-            batchStmt.bind(
+            db.prepare(
+              "INSERT OR REPLACE INTO cloud_regions (vendor, region_id, region_name, country, city, lat, lng, az_list, az_count, status, region_type, planned_date, data_source_url, fetched_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)"
+            ).bind(
               r.vendor, r.region_id, r.region_name, r.country, r.city,
               r.lat, r.lng, r.az_list || "[]", r.az_count || 0,
               r.status || "active", r.region_type || "public",
               r.planned_date || null, r.data_source_url || "", r.fetched_at || new Date().toISOString()
             )
           );
+          if (batch.length >= 50) {
+            await db.batch(batch);
+            inserted += batch.length;
+            batch.length = 0;
+          }
         }
-
         if (batch.length > 0) {
           await db.batch(batch);
           inserted += batch.length;
         }
 
-        // º«¬º≤…ºØ»’÷æ
         if (body.vendor) {
           await db
-            .prepare("INSERT INTO collect_logs (vendor, regions_added, regions_updated, errors, created_at) VALUES (?, ?, ?, ?, ?)")
+            .prepare("INSERT INTO collect_logs (vendor, regions_added, regions_updated, errors, created_at) VALUES (?1, ?2, ?3, ?4, ?5)")
             .bind(body.vendor, inserted, 0, JSON.stringify(body.errors || []), new Date().toISOString())
             .run();
         }
@@ -234,8 +224,7 @@ export default {
     }
   },
 
-  // ∂® ±»ŒŒÒ£∫ø’≈‹£¨Ã· æ≤…ºØ‘⁄ Docker ∂À÷¥––
   async scheduled(_event: ScheduledEvent, env: Env) {
-    console.log("[Cron] Worker ∂® ±¥•∑¢°£ ˝æ›≤…ºØ«Î‘⁄ Docker ∂À÷¥––£¨»ª∫Û POST /api/sync Õ¨≤ΩµΩ D1°£");
+    console.log("[Cron] Worker ÂÆöÊó∂Ëß¶Âèë„ÄÇÊï∞ÊçÆÈááÈõÜËØ∑Âú® Docker Á´ØÊâßË°åÔºåÁÑ∂Âêé POST /api/sync ÂêåÊ≠•Âà∞ D1„ÄÇ");
   },
 };
