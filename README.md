@@ -1,4 +1,4 @@
-﻿# 🛰 Cloud Region Explorer
+# 🛰 Cloud Region Explorer
 
 一站式查询 **AWS、Azure、GCP、阿里云、华为云、腾讯云、UCloud** 全球 Region 与可用区 (AZ) 的 Web 系统。
 
@@ -99,3 +99,13 @@ docker run -d -p 3000:3000 -v ./data:/app/data --name cloud-region-explorer Chuc
 ## 📄 License
 
 MIT
+
+## ☁️ Cloudflare 部署（零服务器）
+
+支持通过 Cloudflare Dashboard 一键连接 GitHub 自动部署，详见 [docs/CLOUDFLARE_DEPLOY.md](docs/CLOUDFLARE_DEPLOY.md)
+
+- **Workers**：API 端点 + 定时采集
+- **D1**：Serverless SQLite 数据库
+- **Pages**：前端静态托管 + CDN
+
+部署后无需维护任何服务器。
