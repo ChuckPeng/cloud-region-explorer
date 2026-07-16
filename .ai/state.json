@@ -1,12 +1,18 @@
 ﻿{
   "project": "cloud-region-explorer",
-  "phase": "phase-4-cicd-deliver",
-  "version": "1.0.4-beta",
-  "task": { "status": "completed" },
+  "phase": "phase-3-qa-audit",
+  "version": "1.7.1-beta",
+  "task": {
+    "status": "in_progress",
+    "description": "修复 Cloudflare Workers 构建失败（worker/index.ts 独立化），更新 CF 部署指南对齐 Dashboard 实际界面"
+  },
   "delivery": {
-    "commit": "d52c1f2",
-    "tag": "v1.0.4-beta",
-    "branch": "main",
-    "dockerhub": "ChuckPeng/cloud-region-explorer:beta, :v1.0.4-beta"
-  }
+    "commit": null,
+    "tag": null,
+    "branch": "main"
+  },
+  "pending": [
+    "CF Pages: 前端 Next.js static export 构建 + deploy to Pages",
+    "Docker 端到 CF Worker 数据同步脚本"
+  ]
 }

@@ -1,4 +1,4 @@
-name = "cloud-region-explorer-api"
+﻿name = "cloud-region-explorer-api"
 main = "index.ts"
 compatibility_date = "2026-07-16"
 

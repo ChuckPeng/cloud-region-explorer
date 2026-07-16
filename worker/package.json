@@ -1,0 +1,14 @@
+﻿{
+  "name": "cloud-region-explorer-worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250716.0",
+    "wrangler": "^4.111.0"
+  }
+}
