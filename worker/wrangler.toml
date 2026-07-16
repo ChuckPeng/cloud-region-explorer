@@ -5,7 +5,7 @@ compatibility_date = "2026-07-16"
 [[d1_databases]]
 binding = "CLOUD_REGIONS_DB"
 database_name = "cloud-regions-db"
-database_id = ""
+database_id = "143b0415-96c7-4bdf-a0cd-537901fd169f"
 
 [triggers]
 crons = ["0 0 * * *"]
