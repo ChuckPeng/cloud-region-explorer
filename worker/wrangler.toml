@@ -1,4 +1,8 @@
-﻿name = "cloud-region-explorer-api"
+﻿# ==================== Cloud Region Explorer - Workers ====================
+# 7 collectors + 1 API worker, 共享 D1 数据库
+# 每个 collector 独立 30s CPU 配额
+
+name = "cloud-region-explorer-api"
 main = "index.ts"
 compatibility_date = "2026-07-16"
 
@@ -9,3 +13,56 @@ database_id = "143b0415-96c7-4bdf-a0cd-537901fd169f"
 
 [triggers]
 crons = ["0 0 * * *"]
+
+# ---------- 环境: 各云厂商 collector workers ----------
+# 通过 --env 参数部署不同的 collector
+# 例如: wrangler deploy --env aws-collector
+
+[env.aws-collector]
+name = "cloud-region-explorer-aws"
+main = "collectors/aws.ts"
+
+[env.aws-collector.triggers]
+crons = ["30 0 * * *"]
+
+[env.azure-collector]
+name = "cloud-region-explorer-azure"
+main = "collectors/azure.ts"
+
+[env.azure-collector.triggers]
+crons = ["30 1 * * *"]
+
+[env.gcp-collector]
+name = "cloud-region-explorer-gcp"
+main = "collectors/gcp.ts"
+
+[env.gcp-collector.triggers]
+crons = ["30 2 * * *"]
+
+[env.aliyun-collector]
+name = "cloud-region-explorer-aliyun"
+main = "collectors/aliyun.ts"
+
+[env.aliyun-collector.triggers]
+crons = ["30 3 * * *"]
+
+[env.huawei-collector]
+name = "cloud-region-explorer-huawei"
+main = "collectors/huawei.ts"
+
+[env.huawei-collector.triggers]
+crons = ["30 4 * * *"]
+
+[env.tencent-collector]
+name = "cloud-region-explorer-tencent"
+main = "collectors/tencent.ts"
+
+[env.tencent-collector.triggers]
+crons = ["30 5 * * *"]
+
+[env.ucloud-collector]
+name = "cloud-region-explorer-ucloud"
+main = "collectors/ucloud.ts"
+
+[env.ucloud-collector.triggers]
+crons = ["30 6 * * *"]

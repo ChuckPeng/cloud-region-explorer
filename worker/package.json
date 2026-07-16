@@ -4,9 +4,16 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
+    "deploy:aws": "wrangler deploy --env aws-collector",
+    "deploy:azure": "wrangler deploy --env azure-collector",
+    "deploy:gcp": "wrangler deploy --env gcp-collector",
+    "deploy:aliyun": "wrangler deploy --env aliyun-collector",
+    "deploy:huawei": "wrangler deploy --env huawei-collector",
+    "deploy:tencent": "wrangler deploy --env tencent-collector",
+    "deploy:ucloud": "wrangler deploy --env ucloud-collector",
+    "deploy:all": "wrangler deploy && wrangler deploy --env aws-collector && wrangler deploy --env azure-collector && wrangler deploy --env gcp-collector && wrangler deploy --env aliyun-collector && wrangler deploy --env huawei-collector && wrangler deploy --env tencent-collector && wrangler deploy --env ucloud-collector",
     "dev": "wrangler dev"
   },
-  "dependencies": {},
   "devDependencies": {
     "wrangler": "^4.0.0"
   }
